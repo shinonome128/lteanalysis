@@ -1,0 +1,251 @@
+version 16.7
+service timestamps debug datetime msec localtime show-timezone year
+service timestamps log datetime msec localtime show-timezone year
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname DC
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password q
+!
+no aaa new-model
+no process cpu extended history
+no process cpu autoprofile hog
+clock timezone JST 9 0
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-3573483472
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3573483472
+ revocation-check none
+ rsakeypair TP-self-signed-3573483472
+!
+!
+crypto pki certificate chain TP-self-signed-3573483472
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 33353733 34383334 3732301E 170D3138 30343233 30323539 
+  31385A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 35373334 
+  38333437 32308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 01009547 BE38F938 62A02B02 4EFF2AE7 7BF7D425 F165D5BF F3FEB46A 
+  CB04C7E1 2FACC227 404849D3 FADC7C48 03E04787 6A429375 9F5B68E7 CC7403D4 
+  AE9F0B41 52DCCD17 1F24622D 892EF111 ADEE0E48 E6097204 A9EFEBD7 20222DFE 
+  B2F5320C B17208E1 F4A6B601 8A8F2C63 69F41D31 C032D9FF D1B9DB04 C03CE647 
+  D80B9881 DFCAF4C2 17FCCF20 9327C32E D253E1BE 684FCD48 66852194 E3B31EF1 
+  CB342C95 1E31D049 2F7BC537 4B183C73 2C8F2BA7 D9A2F3BE F9742D60 2A4A38A8 
+  3B71FD7E 15A4E9AE 568D1BE9 0E27E7CE 7C42FF61 1941226C 9871A30A BC6EA3ED 
+  8C7E847D B2E67400 EC2270C0 B9FB55AE 09AAA297 2472D03E F1BBD424 7644347C 
+  B21BB05E C7E10203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 144CF5CC 3605E1B2 348AB45E F9B64FF9 B25EA9DF 
+  4C301D06 03551D0E 04160414 4CF5CC36 05E1B234 8AB45EF9 B64FF9B2 5EA9DF4C 
+  300D0609 2A864886 F70D0101 05050003 82010100 45C20F4C E51DF04F B9C089F8 
+  FA697FD7 989212FD 18CE124B 76BECFDC A9963641 8F6520B4 B6B0D9CE 7013C90E 
+  D9E2EB85 5E516955 330D93E3 89B2EE56 5A39FECF 3BB6C1E1 C5FD8888 5621A8E8 
+  E705905B 91DEF9D3 9CE0940B 587B5BF1 47CCEE83 803617DC 252D79CC 4B3B4C62 
+  9578D0F2 FD561FDF 82AA739B 3BFBBD43 88F61F3C 648D569F C442E601 B07858D8 
+  F8A2FECE 8D8AA75F D2AD5245 6E1464C8 FDE0672E 1CA386A0 54A9C13F AA904955 
+  C28801D3 8285CE16 193A2A28 FF97E5CF 9EDAA9A3 5F056000 31FB4AD6 931DEC93 
+  2F32427D 0ED5AD3F 0CCD6775 9BE01F24 8239B7BB 0F31DE84 1992A6F1 C392F2C8 
+  7C4F8F3E 44F54585 7D482E4F 55262B14 1FA072F7
+  	quit
+!
+!
+no license feature hseck9
+license udi pid ISR4221/K9 sn FGL211020F0
+license accept end user agreement
+license boot suite FoundationSuiteK9
+license boot level appxk9
+license boot level securityk9
+no license smart enable
+diagnostic bootup level minimal
+!
+spanning-tree extend system-id
+no memory lite
+!
+!
+!
+!
+redundancy
+ mode none
+!
+!
+!
+!
+controller Cellular 0/1/0
+ lte sim data-profile 1 attach-profile 1 slot 0
+ lte modem link-recovery disable
+!
+!
+!
+lldp run
+no cdp run
+!
+! 
+!
+!
+!
+!
+!
+!
+crypto isakmp policy 1
+ encr 3des
+ hash md5
+ authentication pre-share
+ group 2
+crypto isakmp key KDDI address 10.248.138.101 
+crypto isakmp key DOCOMO address 10.162.235.250 
+crypto isakmp keepalive 30
+!
+!
+crypto ipsec transform-set IPSEC esp-3des esp-md5-hmac 
+ mode tunnel
+!
+!
+!
+crypto map GRE-IPSEC_to_campus 1 ipsec-isakmp 
+ set peer 10.162.235.250
+ set transform-set IPSEC 
+ match address 101
+crypto map GRE-IPSEC_to_campus 2 ipsec-isakmp 
+ set peer 10.248.138.101
+ set transform-set IPSEC 
+ match address 102
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Loopback0
+ ip address 100.100.100.100 255.255.255.255
+!
+interface Tunnel1
+ ip address 192.168.101.254 255.255.255.0
+ ip mtu 1372
+ bfd interval 333 min_rx 333 multiplier 3
+ tunnel source Loopback0
+ tunnel destination 1.1.1.1
+!
+interface Tunnel2
+ ip address 192.168.102.254 255.255.255.0
+ ip mtu 1372
+ bfd interval 333 min_rx 333 multiplier 3
+ tunnel source Loopback0
+ tunnel destination 2.2.2.2
+!
+interface GigabitEthernet0/0/0
+ ip address 192.168.2.254 255.255.255.0
+ ip nat inside
+ ip tcp adjust-mss 1332
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ ip address 172.16.1.254 255.255.255.0
+ negotiation auto
+!
+interface Cellular0/1/0
+ ip address negotiated
+ ip nat outside
+ dialer in-band
+ dialer-group 1
+ pulse-time 1
+ crypto map GRE-IPSEC_to_campus
+!
+interface Cellular0/1/1
+ no ip address
+ shutdown
+!
+router ospf 1
+ passive-interface GigabitEthernet0/0/0
+ network 192.168.2.0 0.0.0.255 area 0
+ network 192.168.3.0 0.0.0.255 area 0
+ network 192.168.99.0 0.0.0.255 area 0
+ network 192.168.101.0 0.0.0.255 area 0
+ network 192.168.102.0 0.0.0.255 area 0
+ bfd all-interfaces
+!
+no ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 Cellular0/1/0
+ip route 133.243.238.244 255.255.255.255 192.168.2.1
+!
+!
+no service-routing capabilities-manager
+access-list 1 permit 192.168.2.0 0.0.0.255
+access-list 1 permit 192.168.3.0 0.0.0.255
+access-list 1 permit 172.16.1.0 0.0.0.255
+access-list 101 permit gre host 100.100.100.100 host 1.1.1.1
+access-list 102 permit gre host 100.100.100.100 host 2.2.2.2
+access-list 199 permit esp any any
+access-list 199 permit udp any any eq isakmp
+access-list 199 permit udp any any eq non500-isakmp
+access-list 199 permit ip host 157.2.11.245 any
+dialer-list 1 protocol ip permit
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ transport input none
+ stopbits 1
+line vty 0 4
+ access-class 1 in
+ password q
+ login
+line vty 5 15
+ access-class 1 in
+ password q
+ login
+!
+ntp server 192.168.2.11 prefer
+wsma agent exec
+!
+wsma agent config
+!
+wsma agent filesys
+!
+wsma agent notify
+!
+!
+end

@@ -1,0 +1,202 @@
+version 16.7
+service timestamps debug datetime msec localtime show-timezone year
+service timestamps log datetime msec localtime show-timezone year
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname DOCOMO-LTE
+!
+boot-start-marker
+boot system bootflash:isr4200-universalk9_ias.16.07.01.SPA.bin
+boot-end-marker
+!
+!
+enable password q
+!
+no aaa new-model
+clock timezone JST 9 0
+!
+no ip domain lookup
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+crypto pki trustpoint TP-self-signed-2977151165
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2977151165
+ revocation-check none
+ rsakeypair TP-self-signed-2977151165
+!
+!
+crypto pki certificate chain TP-self-signed-2977151165
+!
+!
+license udi pid ISR4221/K9 sn FJC2205D14G
+license boot level securityk9
+no license smart enable
+diagnostic bootup level minimal
+!
+spanning-tree extend system-id
+!
+!
+!
+!
+redundancy
+ mode none
+!
+!
+!
+!
+controller Cellular 0/1/0
+ lte sim data-profile 1 attach-profile 1 slot 0
+ lte modem link-recovery disable
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+crypto isakmp policy 1
+ encr 3des
+ hash md5
+ authentication pre-share
+ group 2
+crypto isakmp key DOCOMO address 10.230.82.207  
+crypto isakmp keepalive 30
+!
+!
+crypto ipsec transform-set IPSEC esp-3des esp-md5-hmac 
+ mode tunnel
+!
+!
+!
+crypto map GRE-IPSEC_to_campus 1 ipsec-isakmp 
+ set peer 10.230.82.207
+ set transform-set IPSEC 
+ match address 100
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+!
+interface Tunnel1
+ ip address 192.168.101.1 255.255.255.0
+ ip mtu 1372
+ bfd interval 333 min_rx 333 multiplier 3
+ tunnel source Loopback0
+ tunnel destination 100.100.100.100
+!
+interface Tunnel99
+ ip address 192.168.99.1 255.255.255.0
+ ip mtu 1372
+ tunnel source GigabitEthernet0/0/0
+ tunnel destination 192.168.3.252
+!
+interface GigabitEthernet0/0/0
+ ip address 192.168.3.253 255.255.255.0
+ ip nat inside
+ standby 5 ip 192.168.3.254
+ standby 5 preempt delay minimum 180 reload 180
+ ip tcp adjust-mss 1332
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ ip address 172.16.1.1 255.255.255.0
+ negotiation auto
+!
+interface Cellular0/1/0
+ ip address negotiated
+ ip nat outside
+ ip access-group 199 in
+ dialer in-band
+ dialer-group 1
+ pulse-time 1
+ crypto map GRE-IPSEC_to_campus
+!
+interface Cellular0/1/1
+ no ip address
+!
+router ospf 1
+ passive-interface GigabitEthernet0/0/0
+ network 192.168.2.0 0.0.0.255 area 0
+ network 192.168.3.0 0.0.0.255 area 0
+ network 192.168.99.0 0.0.0.255 area 0
+ network 192.168.101.0 0.0.0.255 area 0
+ network 192.168.102.0 0.0.0.255 area 0
+ bfd all-interfaces
+!
+ip nat inside source static tcp 192.168.3.11 80 interface Cellular0/1/0 80
+no ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 Cellular0/1/0
+!
+!
+logging trap debugging
+logging host 192.168.3.11
+access-list 1 permit 192.168.2.0 0.0.0.255
+access-list 1 permit 192.168.3.0 0.0.0.255
+access-list 1 permit 172.16.1.0 0.0.0.255
+access-list 100 permit gre host 1.1.1.1 host 100.100.100.100
+access-list 199 permit esp any any
+access-list 199 permit udp any any eq isakmp
+access-list 199 permit udp any any eq non500-isakmp
+dialer-list 1 protocol ip permit
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ transport input none
+ stopbits 1
+line vty 0 4
+ access-class 1 in
+ password q
+ login
+line vty 5 15
+ access-class 1 in
+ password q
+ login
+!
+ntp server 192.168.3.11 prefer
+wsma agent exec
+!
+wsma agent config
+!
+wsma agent filesys
+!
+wsma agent notify
+!
+!
+end

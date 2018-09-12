@@ -1,0 +1,136 @@
+{
+  "job_id": "rssi",
+  "job_type": "anomaly_detector",
+  "job_version": "6.2.4",
+  "create_time": 1527711599258,
+  "finished_time": 1527711602869,
+  "established_model_memory": 167468,
+  "analysis_config": {
+    "bucket_span": "1m",
+    "detectors": [
+      {
+        "detector_description": "mean(rssi)",
+        "function": "mean",
+        "field_name": "rssi",
+        "partition_field_name": "path.keyword",
+        "rules": [],
+        "detector_index": 0
+      },
+      {
+        "detector_description": "distinct_count(path.keyword)",
+        "function": "distinct_count",
+        "field_name": "path.keyword",
+        "partition_field_name": "path.keyword",
+        "rules": [],
+        "detector_index": 1
+      }
+    ],
+    "influencers": [
+      "path.keyword"
+    ]
+  },
+  "analysis_limits": {
+    "model_memory_limit": "24mb"
+  },
+  "data_description": {
+    "time_field": "@timestamp",
+    "time_format": "epoch_ms"
+  },
+  "model_snapshot_retention_days": 1,
+  "model_snapshot_id": "1527711602",
+  "results_index_name": "custom-rssi",
+  "data_counts": {
+    "job_id": "rssi",
+    "processed_record_count": 259407,
+    "processed_field_count": 518814,
+    "input_bytes": 25162661,
+    "input_field_count": 518814,
+    "invalid_date_count": 0,
+    "missing_field_count": 0,
+    "out_of_order_timestamp_count": 0,
+    "empty_bucket_count": 655,
+    "sparse_bucket_count": 1,
+    "bucket_count": 4069,
+    "earliest_record_timestamp": 1527547585000,
+    "latest_record_timestamp": 1527791737000,
+    "last_data_time": 1527791879046,
+    "latest_empty_bucket_timestamp": 1527682920000,
+    "latest_sparse_bucket_timestamp": 1527682680000,
+    "input_record_count": 259407
+  },
+  "model_size_stats": {
+    "job_id": "rssi",
+    "result_type": "model_size_stats",
+    "model_bytes": 167468,
+    "total_by_field_count": 6,
+    "total_over_field_count": 0,
+    "total_partition_field_count": 5,
+    "bucket_allocation_failures_count": 0,
+    "memory_status": "ok",
+    "log_time": 1528154519000,
+    "timestamp": 1528154340000
+  },
+  "datafeed_config": {
+    "datafeed_id": "datafeed-rssi",
+    "job_id": "rssi",
+    "query_delay": "118942ms",
+    "indices": [
+      "logstash-*"
+    ],
+    "types": [],
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "query_string": {
+              "query": "*",
+              "fields": [],
+              "type": "best_fields",
+              "default_operator": "or",
+              "max_determinized_states": 10000,
+              "enable_position_increments": true,
+              "fuzziness": "AUTO",
+              "fuzzy_prefix_length": 0,
+              "fuzzy_max_expansions": 50,
+              "phrase_slop": 0,
+              "analyze_wildcard": true,
+              "escape": false,
+              "auto_generate_synonyms_phrase_query": true,
+              "fuzzy_transpositions": true,
+              "boost": 1
+            }
+          },
+          {
+            "match_phrase": {
+              "type": {
+                "query": "rssi",
+                "slop": 0,
+                "boost": 1
+              }
+            }
+          }
+        ],
+        "adjust_pure_negative": true,
+        "boost": 1
+      }
+    },
+    "scroll_size": 1000,
+    "chunking_config": {
+      "mode": "auto"
+    },
+    "state": "stopped"
+  },
+  "state": "opened",
+  "node": {
+    "id": "E7geABBNSVWgfmFNRJYQkw",
+    "name": "E7geABB",
+    "ephemeral_id": "PxiuDbTnRBSoPOL5810YNQ",
+    "transport_address": "192.168.142.7:9300",
+    "attributes": {
+      "ml.machine_memory": "8202932224",
+      "ml.max_open_jobs": "20",
+      "ml.enabled": "true"
+    }
+  },
+  "open_time": "573197s"
+}
