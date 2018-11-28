@@ -14,6 +14,7 @@ LTEルータの電界強度が場所により不安定
 ### 物理・論理構成  
   
 ![物理・論理構成](https://drive.google.com/file/d/1sCdxmneERVtnAQojz3sYBRQFGiKRh1rU/view?usp=sharing)  
+![物理・論理構成](https://drive.google.com/uc?export=view&id=1sCdxmneERVtnAQojz3sYBRQFGiKRh1rU)  
   
 ### システム構成  
   
